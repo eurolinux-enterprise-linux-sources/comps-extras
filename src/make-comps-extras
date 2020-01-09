@@ -1,0 +1,65 @@
+#!/usr/bin/python
+
+import glob
+import os
+import shutil
+import sys
+
+icon_map = {
+	"admin-tools" : "system-lock-screen",
+	"apps" : "applications-other",
+	"authoring-and-publishing" : "accessories-dictionary",
+	"base-system" : "applications-system",
+	"base-x" : "video-display",
+	"content" : "system-help",
+	"desktops" : "user-desktop",
+	"development" : "applications-development",
+	"dial-up" : "modem",
+	"eclipse" : "",
+	"editors" : "accessories-text-editor",
+	"education" : "utilities-system-monitor",
+	"engineering-and-scientific" : "applications-engineering",
+	"fonts" : "preferences-desktop-font",
+	"games" : "applications-games",
+	"gnome-desktop" : "",
+	"graphical-internet" : "applications-internet",
+	"graphics" : "applications-graphics",
+	"hardware-support" : "system-run",
+	"input-methods" : "input-keyboard",
+	"java" : "stock_insert-applet",
+	"kde-desktop" : "",
+	"language-support" : "preferences-desktop-locale",
+	"legacy-network-server" : "media-floppy",
+	"mail-server" : "mail-send-receive",
+	"office" : "applications-office",
+	"printing" : "printer",
+	"servers" : "network-server",
+	"sound-and-video" : "applications-multimedia",
+	"sql-server" : "stock_database",
+	"sugar-desktop" : "",
+	"system-tools" : "applications-utilities",
+	"text-internet" : "utilities-terminal",
+	"virtualization" : "computer",
+	"xfce-desktop" : "",
+}
+
+if len(sys.argv) < 2:
+    print "Usage: make-comps-extras <icon theme name>"
+    sys.exit(1)
+
+source = sys.argv[1]
+
+if not os.path.exists('/usr/share/icons/%s' % (source,)):
+    print "Can't find %s icons to use" % (source,)
+    sys.exit(1)
+
+for icon in icon_map.keys():
+    if icon_map[icon]:
+        globresult = glob.glob('/usr/share/icons/%s/24x24/*/%s.png' % (source, icon_map[icon]))
+        if not globresult:
+            globresult = glob.glob('/usr/share/icons/%s/24x24/*/*/%s.png' % (source, icon_map[icon]))
+        if globresult:
+            shutil.copy2(globresult[0], 'pixmaps/%s.png' % (icon,))
+        else:
+            print "Couldn't find icon theme name %s for %s" % (icon_map[icon], icon)
+            
